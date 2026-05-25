@@ -1,0 +1,410 @@
+<!DOCTYPE html><html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SSS Business">
+<title>SSS Business</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+body { background: #050505; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', sans-serif; color: #fff; max-width: 430px; margin: 0 auto; min-height: 100vh; }
+input, button { font-family: inherit; }
+input { background: #0d0d0d; border: 1px solid #2a2a2a; border-radius: 10px; padding: 12px 14px; color: #fff; font-size: 14px; outline: none; width: 100%; }
+input::placeholder { color: #444; }
+input[type=number]::-webkit-outer-spin-button, input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+.tab-content { padding-bottom: 90px; }
+.card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 16px; padding: 20px; margin-bottom: 12px; }
+.btn-primary { background: #00E5FF; color: #000; border: none; border-radius: 10px; padding: 14px 20px; font-size: 14px; font-weight: 800; cursor: pointer; flex: 1; }
+.btn-ghost { background: transparent; color: #555; border: 1px solid #2a2a2a; border-radius: 10px; padding: 14px 20px; font-size: 14px; font-weight: 600; cursor: pointer; flex: 1; }
+.btn-primary:disabled { background: #333; color: #666; cursor: not-allowed; }
+.progress-bar-bg { background: #1a1a1a; border-radius: 100px; height: 8px; overflow: hidden; }
+.progress-bar-fill { height: 100%; border-radius: 100px; transition: width 0.3s; }
+#nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 430px; background: #080808; border-top: 1px solid #1a1a1a; display: flex; padding: 8px 0 20px; z-index: 100; }
+.nav-btn { flex: 1; background: none; border: none; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 8px 0; }
+.nav-label { font-size: 9px; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; }
+.nav-dot { width: 4px; height: 4px; border-radius: 50%; background: #00E5FF; }
+#header { padding: 52px 20px 16px; border-bottom: 1px solid #111; }
+.surface-item { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 14px; margin-bottom: 8px; overflow: hidden; }
+.surface-item.open { border-color: #003333; background: #0d1a1a; }
+.surface-header { padding: 14px 16px; cursor: pointer; display: flex; justify-content: space-between; align-items: center; }
+.surface-body { padding: 0 16px 16px; border-top: 1px solid #1a1a1a; display: none; }
+.surface-item.open .surface-body { display: block; }
+.service-row { display: flex; align-items: center; justify-content: space-between; background: #0a0a0a; border: 1px solid #141414; border-radius: 12px; padding: 14px 16px; margin-bottom: 8px; }
+.service-row.active { background: #0d1a1a; border-color: #003333; }
+.checkbox { width: 24px; height: 24px; border-radius: 6px; background: #1a1a1a; border: 2px solid #333; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; }
+.checkbox.checked { background: #00E5FF; border-color: #00E5FF; }
+.counter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.counter-card { background: #0d0d0d; border: 1px solid #1a1a1a; border-radius: 16px; padding: 20px 16px; }
+.counter-card.flash { background: #003333; border-color: #00E5FF; }
+</style>
+</head>
+<body>
+<div id="header">
+<div style="display:flex;align-items:center;gap:12px;">
+<div style="width:36px;height:36px;border-radius:10px;background:#00E5FF;display:flex;align-items:center;justify-content:center;font-size:18px;">💧</div>
+<div>
+<div style="color:#fff;font-size:16px;font-weight:800;">SSS Business</div>
+<div style="color:#00E5FF;font-size:10px;letter-spacing:2px;text-transform:uppercase;">Sustainable Surface Solutions</div>
+</div>
+</div>
+</div>
+<div id="app" class="tab-content"></div>
+<div id="nav">
+<button class="nav-btn" onclick="showTab('quote')"><span style="font-size:20px;">💰</span><span class="nav-label" id="nl-quote" style="color:#00E5FF;">Quote</span><span class="nav-dot" id="nd-quote"></span></button>
+<button class="nav-btn" onclick="showTab('doors')"><span style="font-size:20px;">🚪</span><span class="nav-label" id="nl-doors" style="color:#444;">Doors</span><span id="nd-doors" style="display:none;" class="nav-dot"></span></button>
+<button class="nav-btn" onclick="showTab('revenue')"><span style="font-size:20px;">📈</span><span class="nav-label" id="nl-revenue" style="color:#444;">Revenue</span><span id="nd-revenue" style="display:none;" class="nav-dot"></span></button>
+<button class="nav-btn" onclick="showTab('rates')"><span style="font-size:20px;">📋</span><span class="nav-label" id="nl-rates" style="color:#444;">Rates</span><span id="nd-rates" style="display:none;" class="nav-dot"></span></button>
+<button class="nav-btn" onclick="showTab('surfaces')"><span style="font-size:20px;">🧱</span><span class="nav-label" id="nl-surfaces" style="color:#444;">Surfaces</span><span id="nd-surfaces" style="display:none;" class="nav-dot"></span></button>
+</div><script>
+const RATES = {
+driveway:{label:"Driveway & Paths",unit:"sqm",rate:4},
+exterior:{label:"House Exterior Wash",unit:"sqm",rate:4},
+softWash:{label:"Soft Wash (add-on)",unit:"sqm",rate:2},
+roof:{label:"Roof Soft Wash",unit:"sqm",rate:6},
+windows:{label:"Window Cleaning",unit:"window",rate:8},
+solar:{label:"Solar Panel Cleaning",unit:"panel",rate:12}
+};
+const MONTHLY_TARGET=8000,WEEKLY_TARGET=2000,DAILY_TARGET=400;
+function fc(n){return '$'+n.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
+function todayKey(k){return 'sss_'+k+'_'+new Date().toISOString().split('T')[0];}
+function monthKey(){const d=new Date();return 'sss_rev_'+d.getFullYear()+'_'+d.getMonth();}
+function weekKey(){const d=new Date(),s=new Date(d);s.setDate(d.getDate()-d.getDay());return 'sss_week_'+s.toISOString().split('T')[0];}
+let activeTab='quote';
+let quoteState={customer:'',address:'',items:Object.fromEntries(Object.keys(RATES).map(k=>[k,{enabled:false,qty:''}])),quote:null};
+let doorState=JSON.parse(localStorage.getItem(todayKey('doors'))||'{"doors":0,"conversations":0,"leads":0,"jobs":0}');
+let revState={today:parseFloat(localStorage.getItem(todayKey('rev'))||0),week:parseFloat(localStorage.getItem(weekKey())||0),month:parseFloat(localStorage.getItem(monthKey())||0),jobs:parseInt(localStorage.getItem('sss_jobs')||0)};
+function saveDoors(){localStorage.setItem(todayKey('doors'),JSON.stringify(doorState));}
+function saveRev(){localStorage.setItem(todayKey('rev'),revState.today);localStorage.setItem(weekKey(),revState.week);localStorage.setItem(monthKey(),revState.month);localStorage.setItem('sss_jobs',revState.jobs);}
+function showTab(tab){
+activeTab=tab;
+['quote','doors','revenue','rates','surfaces'].forEach(t=>{
+document.getElementById('nl-'+t).style.color=t===tab?'#00E5FF':'#444';
+document.getElementById('nd-'+t).style.display=t===tab?'block':'none';
+});
+render();
+window.scrollTo(0,0);
+}
+function render(){
+const app=document.getElementById('app');
+if(activeTab==='quote')app.innerHTML=renderQuote();
+else if(activeTab==='doors')app.innerHTML=renderDoors();
+else if(activeTab==='revenue')app.innerHTML=renderRevenue();
+else if(activeTab==='rates')app.innerHTML=renderRates();
+else if(activeTab==='surfaces')app.innerHTML=renderSurfaces();
+}
+function renderQuote(){
+const s=quoteState;
+const total=Object.entries(s.items).reduce((sum,[k,v])=>v.enabled&&v.qty?sum+parseFloat(v.qty)*RATES[k].rate:sum,0);
+let rows=Object.entries(RATES).map(([k,info])=>`
+<div class="service-row ${s.items[k].enabled?'active':''}" >
+<div style="display:flex;align-items:center;gap:12px;flex:1;">
+<div class="checkbox ${s.items\[k\].enabled?'checked':''}" onclick="toggleService('${k}')">
+${s.items[k].enabled?'<span style="color:#000;font-size:14px;font-weight:700;">✓</span>':''}
+</div>
+<div onclick="toggleService('${k}')">
+<div style="color:${s.items\[k\].enabled?'#fff':'#666'};font-size:13px;font-weight:600;">${info.label}</div>
+<div style="color:#00E5FF;font-size:11px;">$${info.rate} per ${info.unit}</div>
+</div>
+</div>
+${s.items\[k\].enabled?`<input class="qty-input" type="number" placeholder="${info.unit}" value="${s.items\[k\].qty}" oninput="updateQty('${k}',this.value)" style="width:70px;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:8px 10px;color:#00E5FF;font-size:14px;font-weight:700;text-align:center;outline:none;">` :''}
+</div>`).join('');
+let quoteCard='';
+if(s.quote){
+quoteCard=`<div style="background:#080808;border:1px solid #1a1a1a;border-radius:16px;padding:20px;margin-top:20px;">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+<span style="color:#00E5FF;font-size:12px;letter-spacing:2px;text-transform:uppercase;">Quote Ready</span>
+<button onclick="copyQuote()" id="copy-btn" style="background:#00E5FF22;color:#00E5FF;border:1px solid #00E5FF44;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer;">Copy</button>
+</div>
+${s.quote.customer?`<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#888;">Customer</span><span style="color:#fff;">${s.quote.customer}</span></div>`:''}
+${s.quote.address?`<div style="display:flex;justify-content:space-between;margin-bottom:8px;"><span style="color:#888;">Address</span><span style="color:#fff;text-align:right;max-width:60%;">${s.quote.address}</span></div>`:''}
+<div style="height:1px;background:#1a1a1a;margin:12px 0;"></div>
+${s.quote.lines.map(l=>`<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+<div><div style="color:#ccc;font-size:13px;">${l.label}</div><div style="color:#555;font-size:11px;">${l.qty} ${l.unit} @ $${l.rate}</div></div>
+<span style="color:#00E5FF;font-weight:700;">$${l.subtotal.toFixed(2)}</span>
+</div>`).join('')}
+<div style="height:1px;background:#1a1a1a;margin:12px 0;"></div>
+<div style="display:flex;justify-content:space-between;align-items:center;">
+<span style="color:#fff;font-size:15px;font-weight:700;">Total</span>
+<span style="color:#00E5FF;font-size:22px;font-weight:800;">${fc(s.quote.total)}</span>
+</div>
+<div style="margin-top:16px;padding:12px;background:#0a0a0a;border-radius:8px;">
+<div style="color:#555;font-size:11px;">Nick — Sustainable Surface Solutions</div>
+<div style="color:#555;font-size:11px;">0426 748 238</div>
+<div style="color:#555;font-size:11px;">sustainablesurfacesolutions.com.au</div>
+</div>
+</div>`;}
+return `<div style="padding:20px 16px;">
+<p style="color:#00E5FF;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;">Generate Quote</p>
+<div style="margin-bottom:12px;"><input placeholder="Customer name (optional)" value="${s.customer}" oninput="quoteState.customer=this.value"></div>
+<div style="margin-bottom:20px;"><input placeholder="Property address (optional)" value="${s.address}" oninput="quoteState.address=this.value"></div>
+<p style="color:#888;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">Services</p>
+${rows}
+${total>0?`<div style="display:flex;justify-content:space-between;align-items:center;background:#001a1a;border:1px solid #003333;border-radius:14px;padding:16px 20px;margin-top:20px;">
+<span style="color:#888;font-size:13px;">Estimated Total</span>
+<span style="color:#00E5FF;font-size:28px;font-weight:800;">${fc(total)}</span>
+</div>`:''}
+<div style="display:flex;gap:10px;margin-top:20px;">
+<button class="btn-primary" onclick="generateQuote()" ${total===0?'disabled':''}>Generate Quote</button>
+<button class="btn-ghost" onclick="resetQuote()">Reset</button>
+</div>
+${quoteCard}
+</div>`;}
+function toggleService(k){quoteState.items[k].enabled=!quoteState.items[k].enabled;if(!quoteState.items[k].enabled)quoteState.items[k].qty='';render();}
+function updateQty(k,v){quoteState.items[k].qty=v;}
+function generateQuote(){
+const lines=Object.entries(quoteState.items).filter(([,v])=>v.enabled&&v.qty).map(([k,v])=>({label:RATES[k].label,qty:parseFloat(v.qty),unit:RATES[k].unit,rate:RATES[k].rate,subtotal:parseFloat(v.qty)*RATES[k].rate}));
+if(!lines.length)return;
+const total=lines.reduce((s,l)=>s+l.subtotal,0);
+quoteState.quote={customer:quoteState.customer,address:quoteState.address,lines,total};
+render();}
+function resetQuote(){quoteState={customer:'',address:'',items:Object.fromEntries(Object.keys(RATES).map(k=>[k,{enabled:false,qty:''}])),quote:null};render();}
+function copyQuote(){
+const q=quoteState.quote;if(!q)return;
+const date=new Date().toLocaleDateString('en-AU',{day:'numeric',month:'long',year:'numeric'});
+const ref='SSS-'+Date.now().toString().slice(-6);
+const rows=q.lines.map(l=>`<tr><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#333;">${l.label}</td><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#666;text-align:center;">${l.qty} ${l.unit}</td><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#666;text-align:center;">$${l.rate}/${l.unit}</td><td style="padding:12px 16px;border-bottom:1px solid #f0f0f0;font-size:14px;color:#333;text-align:right;font-weight:600;">$${l.subtotal.toFixed(2)}</td></tr>`).join('');
+const html=`<div style="font-family:-apple-system,sans-serif;max-width:600px;margin:0 auto;background:#fff;"><div style="background:#0a0a0a;padding:32px 40px;border-radius:12px 12px 0 0;"><div style="color:#00E5FF;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:6px;">Quote</div><div style="color:#fff;font-size:22px;font-weight:800;">Sustainable Surface Solutions</div><div style="color:#555;font-size:12px;margin-top:4px;">Professional Pressure Washing — Western Sydney</div></div><div style="background:#f8f8f8;padding:20px 40px;border-left:4px solid #00E5FF;">${q.customer?`<div style="font-size:13px;color:#888;">Prepared for</div><div style="font-size:15px;font-weight:700;color:#111;">${q.customer}</div>`:''} ${q.address?`<div style="font-size:13px;color:#888;margin-top:8px;">Property</div><div style="font-size:14px;color:#333;">${q.address}</div>`:''}</div><div style="padding:0 40px;"><table style="width:100%;border-collapse:collapse;margin-top:8px;"><thead><tr style="background:#f8f8f8;"><th style="padding:12px 16px;font-size:11px;text-transform:uppercase;color:#888;text-align:left;">Service</th><th style="padding:12px 16px;font-size:11px;text-transform:uppercase;color:#888;text-align:center;">Qty</th><th style="padding:12px 16px;font-size:11px;text-transform:uppercase;color:#888;text-align:center;">Rate</th><th style="padding:12px 16px;font-size:11px;text-transform:uppercase;color:#888;text-align:right;">Amount</th></tr></thead><tbody>${rows}</tbody></table></div><div style="margin:16px 40px 0;background:#0a0a0a;border-radius:10px;padding:20px 24px;display:flex;justify-content:space-between;align-items:center;"><div style="color:#888;font-size:14px;font-weight:600;text-transform:uppercase;">Total</div><div style="color:#00E5FF;font-size:28px;font-weight:900;">$${q.total.toFixed(2)}</div></div><div style="padding:20px 40px;"><div style="background:#f8f8f8;border-radius:10px;padding:16px 20px;font-size:12px;color:#888;line-height:1.8;">✅ Free quote, no obligation<br>🌿 Eco friendly products on every job<br>🏠 Safe for families, kids and pets<br>⚡ Quote valid for 30 days</div></div><div style="background:#0a0a0a;padding:24px 40px;border-radius:0 0 12px 12px;border-top:2px solid #00E5FF;"><div style="color:#fff;font-size:14px;font-weight:700;margin-bottom:8px;">Nick</div><div style="color:#888;font-size:12px;line-height:2;">📞 0426 748 238<br>🌐 sustainablesurfacesolutions.com.au<br>📍 Bligh Park, Western Sydney</div></div></div>`;
+const plain=[`QUOTE ${ref} — Sustainable Surface Solutions`,`Date: ${date}`,q.customer?`Customer: ${q.customer}`:'',q.address?`Address: ${q.address}`:'','',...q.lines.map(l=>`${l.label} — ${l.qty} ${l.unit} @ $${l.rate}/${l.unit} = $${l.subtotal.toFixed(2)}`),``,`TOTAL: $${q.total.toFixed(2)}`,``,`Nick — 0426 748 238`,`sustainablesurfacesolutions.com.au`].filter(Boolean).join('\n');
+try{const ci=new ClipboardItem({'text/html':new Blob([html],{type:'text/html'}),'text/plain':new Blob([plain],{type:'text/plain'})});navigator.clipboard.write([ci]);}
+catch{navigator.clipboard.writeText(plain);}
+const btn=document.getElementById('copy-btn');
+if(btn){btn.textContent='Copied!';setTimeout(()=>{if(btn)btn.textContent='Copy';},2000);}
+}function renderDoors(){
+const s=doorState;
+const cr=s.doors>0?((s.conversations/s.doors)*100).toFixed(0):0;
+const lr=s.leads>0?((s.jobs/s.leads)*100).toFixed(0):0;
+const pct=Math.min(100,(s.doors/25)*100);
+const trackers=[{k:‘doors’,label:‘Doors Knocked’,emoji:‘🚪’},{k:‘conversations’,label:‘Conversations’,emoji:‘💬’},{k:‘leads’,label:‘Leads’,emoji:‘🎯’},{k:‘jobs’,label:‘Jobs Booked’,emoji:‘✅’}];
+return `<div style="padding:20px 16px;">
+<p style="color:#00E5FF;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Today's Session</p>
+<p style="color:#555;font-size:12px;margin-bottom:20px;">${new Date().toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'long'})}</p>
+<div class="counter-grid">
+${trackers.map(t=>`<div class="counter-card" id="cc-${t.k}">
+<div style="font-size:24px;margin-bottom:4px;">${t.emoji}</div>
+<div style="color:#555;font-size:10px;letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;">${t.label}</div>
+<div style="color:#00E5FF;font-size:42px;font-weight:900;line-height:1;margin-bottom:16px;">${s[t.k]}</div>
+<div style="display:flex;gap:8px;">
+<button onclick="incDoor('${t.k}')" style="flex:1;background:#00E5FF;color:#000;border:none;border-radius:8px;padding:10px 0;font-size:20px;font-weight:900;cursor:pointer;">+</button>
+<button onclick="decDoor('${t.k}')" style="width:40px;background:#1a1a1a;color:#666;border:none;border-radius:8px;font-size:18px;cursor:pointer;">-</button>
+</div>
+</div>`).join('')}
+</div>
+<div class="card" style="margin-bottom:12px;">
+<p style="color:#555;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Conversion Rates</p>
+<div style="display:flex;justify-content:space-around;">
+<div style="text-align:center;"><div style="color:#00E5FF;font-size:32px;font-weight:900;">${cr}%</div><div style="color:#555;font-size:11px;">Door to Chat</div></div>
+<div style="width:1px;background:#1a1a1a;"></div>
+<div style="text-align:center;"><div style="color:#00E5FF;font-size:32px;font-weight:900;">${lr}%</div><div style="color:#555;font-size:11px;">Lead to Job</div></div>
+<div style="width:1px;background:#1a1a1a;"></div>
+<div style="text-align:center;"><div style="color:#00E5FF;font-size:32px;font-weight:900;">${s.jobs}</div><div style="color:#555;font-size:11px;">Jobs Today</div></div>
+</div>
+</div>
+<div class="card" style="margin-bottom:20px;">
+<p style="color:#555;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:12px;">Daily Target: 25 Doors</p>
+<div class="progress-bar-bg"><div class="progress-bar-fill" style="background:${s.doors>=25?'#00ff88':'#00E5FF'};width:${pct}%;"></div></div>
+<div style="color:#555;font-size:12px;margin-top:8px;text-align:right;">${s.doors>=25?'🎯 Target hit!':`${25-s.doors} doors to go`}</div>
+</div>
+<button class="btn-ghost" style="width:100%;" onclick="resetDoors()">Reset Today</button>
+</div>`;}
+function incDoor(k){doorState[k]++;saveDoors();const card=document.getElementById('cc-'+k);if(card){card.classList.add('flash');setTimeout(()=>card.classList.remove('flash'),400);}render();}
+function decDoor(k){if(doorState[k]>0)doorState[k]--;saveDoors();render();}
+function resetDoors(){doorState={doors:0,conversations:0,leads:0,jobs:0};saveDoors();render();}
+function renderRevenue(){
+const s=revState;
+const metrics=[{l:'Today',v:s.today,t:DAILY_TARGET},{l:'This Week',v:s.week,t:WEEKLY_TARGET},{l:'This Month',v:s.month,t:MONTHLY_TARGET}];
+const avgJob=s.jobs>0?fc(s.month/s.jobs):'$0';
+return `<div style="padding:20px 16px;">
+<p style="color:#00E5FF;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:20px;">Revenue Dashboard</p>
+${metrics.map(m=>{const pct=Math.min(100,(m.v/m.t)*100);const col=pct>=100?'#00ff88':'#00E5FF';return `<div class="card">
+<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;">
+<div><div style="color:#555;font-size:11px;letter-spacing:2px;text-transform:uppercase;">${m.l}</div>
+<div style="color:#fff;font-size:32px;font-weight:900;margin-top:4px;">${fc(m.v)}</div></div>
+<div style="text-align:right;"><div style="color:${col};font-size:11px;">${pct>=100?'Target Hit!':pct.toFixed(0)+'%'}</div><div style="color:#333;font-size:11px;margin-top:2px;">of ${fc(m.t)}</div></div>
+</div>
+<div class="progress-bar-bg"><div class="progress-bar-fill" style="background:${col};width:${pct}%;"></div></div>
+${m.v<m.t?`<div style="color:#555;font-size:11px;margin-top:8px;">${fc(m.t-m.v)} to go</div>`:''}
+</div>`;}).join('')}
+<div class="card">
+<div style="display:flex;justify-content:space-around;">
+<div style="text-align:center;"><div style="color:#00E5FF;font-size:28px;font-weight:900;">${s.jobs}</div><div style="color:#555;font-size:11px;">Total Jobs</div></div>
+<div style="width:1px;background:#1a1a1a;"></div>
+<div style="text-align:center;"><div style="color:#00E5FF;font-size:28px;font-weight:900;">${avgJob}</div><div style="color:#555;font-size:11px;">Avg Job</div></div>
+<div style="width:1px;background:#1a1a1a;"></div>
+<div style="text-align:center;"><div style="color:#00E5FF;font-size:28px;font-weight:900;">${fc(Math.max(0,MONTHLY_TARGET-s.month))}</div><div style="color:#555;font-size:11px;">To Target</div></div>
+</div>
+</div>
+<div class="card">
+<p style="color:#555;font-size:11px;letter-spacing:2px;text-transform:uppercase;margin-bottom:16px;">Log a Job</p>
+<div style="display:flex;gap:10px;">
+<input type="number" placeholder="Job amount (AUD)" id="rev-input" style="flex:1;" onkeydown="if(event.key==='Enter')addRev()">
+<button class="btn-primary" style="flex:0;padding:12px 20px;" onclick="addRev()">Add</button>
+</div>
+</div>
+</div>`;}
+function addRev(){const inp=document.getElementById('rev-input');const amt=parseFloat(inp.value);if(!amt||isNaN(amt))return;revState.today+=amt;revState.week+=amt;revState.month+=amt;revState.jobs++;saveRev();inp.value='';render();}
+  const SERVICES_DATA=[
+{category:“Residential”,items:[
+{name:“Driveway & Paths”,desc:“Pressure wash driveway and surrounding paths”,price:“from $150”,detail:”$4 per sqm”},
+{name:“House Exterior Wash”,desc:“Full exterior walls, single storey”,price:“from $320”,detail:”$4 per sqm”},
+{name:“Driveway & House Combo”,desc:“Our most popular package”,price:“from $450”,detail:“Bundle & save”},
+{name:“Window Cleaning”,desc:“Add-on to any service”,price:”$8 per window”,detail:“Add-on”},
+{name:“Soft Wash Treatment”,desc:“Gentle clean for rendered walls and fences”,price:“Ask us”,detail:”$2 per sqm add-on”},
+]},
+{category:“Specialist”,items:[
+{name:“Roof Soft Wash”,desc:“Removes lichen, moss and algae”,price:“Contact for quote”,detail:”$6 per sqm”},
+{name:“Solar Panel Cleaning”,desc:“Low pressure, eco safe method”,price:“Contact for quote”,detail:”$12 per panel”},
+]},
+{category:“Commercial”,items:[
+{name:“Storefronts”,desc:“Building exterior and shopfront”,price:“Contact for quote”,detail:“Tailored pricing”},
+{name:“Car Parks”,desc:“Oil stains, grime and dirt removal”,price:“Contact for quote”,detail:“Tailored pricing”},
+{name:“Strata & Community”,desc:“Shared facilities and walkways”,price:“Contact for quote”,detail:“Tailored pricing”},
+]},
+];
+function renderRates(){
+return `<div style="padding:20px 16px;">
+<p style="color:#00E5FF;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Our Services</p>
+<p style="color:#555;font-size:12px;margin-bottom:24px;">Eco friendly. Commercial grade. Western Sydney.</p>
+${SERVICES_DATA.map(cat=>`<div style="margin-bottom:24px;">
+<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+<div style="flex:1;height:1px;background:#1a1a1a;"></div>
+<span style="color:#00E5FF;font-size:10px;letter-spacing:3px;text-transform:uppercase;">${cat.category}</span>
+<div style="flex:1;height:1px;background:#1a1a1a;"></div>
+</div>
+${cat.items.map(item=>`<div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:14px;padding:16px 18px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center;gap:12px;">
+<div style="flex:1;">
+<div style="color:#fff;font-size:14px;font-weight:700;margin-bottom:3px;">${item.name}</div>
+<div style="color:#555;font-size:12px;">${item.desc}</div>
+<div style="color:#333;font-size:11px;margin-top:3px;">${item.detail}</div>
+</div>
+<div style="text-align:right;white-space:nowrap;color:#00E5FF;font-size:14px;font-weight:800;">${item.price}</div>
+</div>`).join('')}
+</div>`).join('')}
+<div style="background:#0d0d0d;border:1px solid #00E5FF22;border-radius:16px;padding:20px;">
+<div style="color:#00E5FF;font-size:12px;font-weight:700;margin-bottom:12px;">Sustainable Surface Solutions</div>
+<div style="color:#555;font-size:12px;line-height:1.8;">📞 0426 748 238<br>🌐 sustainablesurfacesolutions.com.au<br>📍 Bligh Park, Western Sydney<br>🌿 Eco friendly products on every job</div>
+</div>
+</div>`;}
+const SURFACES=[
+{category:"Driveways & Paths",items:[
+{name:"Plain Concrete",tags:["concrete","driveway","path"],method:"Pressure Wash",risk:"Low",tip:"Most forgiving surface. Use a surface cleaner attachment for even results. Safe at 2500-3000 PSI.",caution:"Watch for existing cracks — high pressure can widen them.",recommend:"Pressure wash only. No soft wash needed unless algae is heavy.",product:{name:"Chemtech 5L Concrete & Driveway Cleaner",price:"$36.63",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-5l-concrete-and-driveway-cleaner_p0960074"}},
+{name:"Exposed Aggregate",tags:["exposed aggregate","driveway","pebble"],method:"Pressure Wash",risk:"Low",tip:"Great results with pressure washing. Use a surface cleaner and keep distance consistent.",caution:"Avoid very high pressure on loose or aging aggregate — stones can dislodge.",recommend:"Medium pressure, surface cleaner attachment.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+{name:"Stamped Concrete",tags:["stamped","coloured concrete","driveway","patterned"],method:"Soft Wash + Medium Pressure",risk:"Medium",tip:"Often has a sealant applied. High pressure can strip it and fade the colour.",caution:"Never use high pressure on sealed stamped concrete. Can strip colour permanently.",recommend:"Soft wash pre-treat, medium pressure rinse. Recommend resealing after.",product:{name:"Chemtech 1L Concrete & Driveway Cleaner",price:"$17.78",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-1l-concrete-and-driveway-cleaner_p0960073"}},
+{name:"Sandstone Pavers",tags:["sandstone","pavers","driveway","path","natural stone"],method:"Soft Wash Only",risk:"High",tip:"Sandstone is porous and soft. High pressure will etch and erode the surface permanently.",caution:"Never use high pressure on sandstone. Irreversible surface damage will occur.",recommend:"Soft wash only. pH neutral stone cleaner. Always test a small area first.",product:{name:"Peerless JAL 1L Stone Cleaner",price:"$19.98",store:"Bunnings",url:"https://www.bunnings.com.au/peerless-jal-1l-deep-clean-slate-and-hard-stone-cleaner_p4470411"}},
+{name:"Limestone Pavers",tags:["limestone","pavers","driveway","path","natural stone"],method:"Soft Wash Only",risk:"High",tip:"Very porous and sensitive. Acid-based cleaners will dissolve the surface.",caution:"Never use acidic cleaners or high pressure. Surface etching is permanent.",recommend:"Soft wash only. pH neutral cleaner essential.",product:{name:"Peerless JAL 1L Stone Cleaner",price:"$19.98",store:"Bunnings",url:"https://www.bunnings.com.au/peerless-jal-1l-deep-clean-slate-and-hard-stone-cleaner_p4470411"}},
+{name:"Brick Pavers",tags:["brick","pavers","driveway","path","clay"],method:"Pressure Wash",risk:"Low-Medium",tip:"Clay brick pavers clean well with medium pressure. Great before and after results.",caution:"Avoid directing high pressure into mortar joints.",recommend:"Medium pressure, fan tip, keep nozzle moving.",product:{name:"Chemtech 5L Brick Tile & Paver Cleaner",price:"$52.47",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-5l-brick-tile-and-paver-cleaner_p0964686"}},
+{name:"Travertine Pavers",tags:["travertine","pavers","natural stone","driveway"],method:"Soft Wash Only",risk:"High",tip:"Premium natural stone that is very porous. One of the most commonly damaged surfaces.",caution:"High pressure will permanently pit and erode travertine.",recommend:"Soft wash only. Consult customer about sealing after clean.",product:{name:"Peerless JAL 1L Stone Cleaner",price:"$19.98",store:"Bunnings",url:"https://www.bunnings.com.au/peerless-jal-1l-deep-clean-slate-and-hard-stone-cleaner_p4470411"}},
+{name:"Slate Pavers",tags:["slate","pavers","natural stone","path"],method:"Soft Wash + Light Rinse",risk:"Medium",tip:"Slate has natural layering that can flake under pressure. Soft wash does most of the work.",caution:"Avoid high pressure on edges and corners where flaking is most likely.",recommend:"Soft wash pre-treat, low pressure rinse with wide fan.",product:{name:"Peerless JAL 1L Stone Cleaner",price:"$19.98",store:"Bunnings",url:"https://www.bunnings.com.au/peerless-jal-1l-deep-clean-slate-and-hard-stone-cleaner_p4470411"}},
+{name:"Asphalt / Bitumen",tags:["asphalt","bitumen","driveway","black"],method:"Pressure Wash",risk:"Medium",tip:"Asphalt can soften in heat. Medium pressure works well in cooler conditions.",caution:"Hot water can soften asphalt. Avoid steam cleaning.",recommend:"Medium pressure, cold water, wide fan tip.",product:{name:"30 Seconds 1L Outdoor Cleaner",price:"$15.35",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-1l-outdoor-cleaner-spray-1l_p4461747"}},
+{name:"Gravel / Pebble",tags:["gravel","pebble","driveway","loose"],method:"Not Recommended",risk:"High",tip:"Loose gravel driveways cannot be pressure washed — the stones will scatter.",caution:"Do not pressure wash loose gravel. Will displace entire surface.",recommend:"Not suitable for pressure washing. Advise customer upfront.",product:null},
+]},
+{category:"Roofs",items:[
+{name:"Terracotta Roof Tiles",tags:["terracotta","roof","clay tiles","orange"],method:"Soft Wash Only",risk:"Very High",tip:"Extremely fragile and porous. Soft wash with biocidal detergent only. Results take 24-48hrs.",caution:"Never pressure wash terracotta. Even medium pressure will crack and chip tiles permanently.",recommend:"Soft wash only. No exceptions. Inform customer results may develop over 24-48hrs.",product:{name:"30 Seconds 5L Roof Treatment",price:"$55.49",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-roof-treatment-concentrate_p4460168"}},
+{name:"Concrete Roof Tiles",tags:["concrete","roof","tiles","monier"],method:"Soft Wash + Light Pressure",risk:"Medium",tip:"More durable than terracotta but still requires care. Soft wash first then low-medium pressure rinse.",caution:"High pressure removes colour coating on painted concrete tiles. Cannot be undone.",recommend:"Soft wash pre-treat, low-medium pressure rinse, wide fan nozzle.",product:{name:"30 Seconds 5L Roof Treatment",price:"$55.49",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-roof-treatment-concentrate_p4460168"}},
+{name:"Colorbond / Metal Roof",tags:["colorbond","metal","roof","steel","tin"],method:"Soft Wash + Medium Pressure",risk:"Low-Medium",tip:"Colorbond cleans up beautifully. Take care around ridgecapping and flashings.",caution:"Avoid directing pressure under ridgecapping — can cause leaks. Never walk on Colorbond.",recommend:"Soft wash pre-treat, medium pressure rinse. Excellent results.",product:{name:"30 Seconds 5L Roof Treatment",price:"$55.49",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-roof-treatment-concentrate_p4460168"}},
+{name:"Slate Roof Tiles",tags:["slate","roof","natural stone tiles"],method:"Soft Wash Only",risk:"Very High",tip:"Natural slate is extremely fragile. Soft wash only. Avoid walking on slate entirely.",caution:"Pressure washing slate will crack and shatter tiles. Replacement costs are very high.",recommend:"Soft wash only. Quote conservatively and flag fragility to customer.",product:{name:"30 Seconds 5L Roof Treatment",price:"$55.49",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-roof-treatment-concentrate_p4460168"}},
+{name:"Membrane / Flat Roof",tags:["flat roof","membrane","rubber","torch on"],method:"Soft Wash Only",risk:"Very High",tip:"Membrane roofs can be punctured by pressure washing. Soft wash with gentle rinse only.",caution:"Pressure washing membrane roofs can void warranties and cause leaks.",recommend:"Soft wash only. Inspect roof condition before accepting job.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+{name:"Asbestos Cement Roof",tags:["asbestos","fibro","cement","roof"],method:"DO NOT ATTEMPT",risk:"Extreme",tip:"Common on homes built before 1990. Must never be pressure washed.",caution:"Pressure washing asbestos releases dangerous fibres. This is illegal without proper licensing.",recommend:"Do not clean. Advise customer to contact a licensed asbestos removal specialist.",product:null},
+]},
+{category:"House Exterior Walls",items:[
+{name:"Brick Walls",tags:["brick","walls","exterior","masonry"],method:"Soft Wash + Medium Pressure",risk:"Low-Medium",tip:"Brick cleans very well and produces impressive results. Soft wash pre-treat, medium pressure rinse.",caution:"Keep pressure away from mortar joints. Can erode pointing over time.",recommend:"Soft wash + medium pressure rinse. Great upsell opportunity.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+{name:"Rendered Walls",tags:["render","cement render","walls","exterior","smooth"],method:"Soft Wash",risk:"Medium",tip:"Can have hairline cracks. Soft wash is preferred. Medium pressure acceptable on sound render.",caution:"High pressure can blow out cracked render. Inspect for cracks before quoting.",recommend:"Soft wash preferred. Check render condition before job.",product:{name:"30 Seconds 2L House Wash",price:"$39.99",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-2l-house-wash-with-rapid-hose-end-technology_p0130857"}},
+{name:"Acrylic / Texture Coat",tags:["acrylic","texture coat","render","walls","exterior"],method:"Soft Wash Only",risk:"High",tip:"Paint-based render system. High pressure will strip it permanently.",caution:"High pressure permanently damages acrylic render. Cannot be repaired without recoating.",recommend:"Soft wash only. Flag risk to customer before starting.",product:{name:"30 Seconds 2L House Wash",price:"$39.99",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-2l-house-wash-with-rapid-hose-end-technology_p0130857"}},
+{name:"Weatherboard / Timber Cladding",tags:["weatherboard","timber","wood","cladding","walls"],method:"Soft Wash Only",risk:"High",tip:"Highly sensitive to moisture and pressure. Water must not be forced under boards or into joints.",caution:"Pressure can force water behind boards causing rot and structural damage.",recommend:"Soft wash only. Low pressure rinse from above, never upward into joints.",product:{name:"Cabots 1L Deck Clean",price:"$23.89",store:"Bunnings",url:"https://www.bunnings.com.au/cabot-s-1l-deck-clean-1l_p1521451"}},
+{name:"Fibre Cement (Hardie)",tags:["fibre cement","hardie","hardiplank","cladding","walls"],method:"Soft Wash + Low Pressure",risk:"Medium",tip:"More durable than timber but still sensitive to water intrusion at joins.",caution:"Avoid directing pressure at joins and edges. Water intrusion can cause swelling.",recommend:"Soft wash + low-medium pressure. Keep nozzle at least 30cm from surface.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+{name:"Vinyl / PVC Cladding",tags:["vinyl","pvc","cladding","walls","plastic"],method:"Soft Wash + Medium Pressure",risk:"Low",tip:"Vinyl is durable and easy to clean. Soft wash removes mould and algae well.",caution:"Avoid very high pressure which can crack aged or brittle vinyl.",recommend:"Soft wash + medium pressure. Easy job, good results.",product:{name:"30 Seconds 1L Outdoor Cleaner",price:"$15.35",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-1l-outdoor-cleaner-spray-1l_p4461747"}},
+{name:"Aluminium Cladding",tags:["aluminium","metal","cladding","walls"],method:"Soft Wash + Medium Pressure",risk:"Low",tip:"Aluminium cladding cleans up well. Avoid abrasive chemicals that scratch anodised surfaces.",caution:"Avoid acidic cleaners on aluminium — can cause oxidation and staining.",recommend:"Soft wash with pH neutral cleaner, medium pressure rinse.",product:{name:"Chemtech 1L Blitz Aluminium Cleaner",price:"$26.99",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-1l-blitz-aluminium-cleaner_p0964671"}},
+{name:"Asbestos Cement Sheet (Fibro)",tags:["asbestos","fibro","cement sheet","walls","cladding"],method:"DO NOT ATTEMPT",risk:"Extreme",tip:"Very common on Australian homes built before 1990. Cannot be identified by appearance alone.",caution:"Pressure washing asbestos releases carcinogenic fibres. This is illegal without proper licensing.",recommend:"Do not clean. Recommend customer engage licensed asbestos professional.",product:null},
+]},
+{category:"Fences & Gates",items:[
+{name:"Colorbond Fence",tags:["colorbond","fence","steel","metal"],method:"Soft Wash + Medium Pressure",risk:"Low",tip:"Colorbond fences clean up beautifully. Great upsell when doing a driveway or exterior.",caution:"Avoid directing pressure at screw fixings and joins.",recommend:"Soft wash + medium pressure. Always upsell when near a fence.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+{name:"Timber Fence",tags:["timber","wood","fence","paling"],method:"Soft Wash Only",risk:"High",tip:"Soft wash with wood-safe cleaner removes mould and grey weathering. Low pressure rinse only.",caution:"High pressure raises the grain of timber permanently and can cause splintering.",recommend:"Soft wash only. Recommend customer oil or stain the fence after cleaning.",product:{name:"Cabots 4L Deck Clean",price:"$41.29",store:"Bunnings",url:"https://www.bunnings.com.au/cabot-s-4l-deck-clean_p1521477"}},
+{name:"Brick or Block Fence",tags:["brick","block","fence","masonry","wall"],method:"Soft Wash + Medium Pressure",risk:"Low",tip:"Cleans well with medium pressure. Soft wash pre-treat for organic growth.",caution:"Eroding mortar joints with high pressure over time weakens the structure.",recommend:"Soft wash + medium pressure. Good results, low risk.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+{name:"Glass Pool Fence",tags:["glass","fence","pool","frameless"],method:"Soft Wash + Low Pressure",risk:"Medium",tip:"Glass fencing responds well to soft wash with a glass-safe detergent.",caution:"Never use abrasive chemicals on glass. Avoid high pressure at hardware fittings.",recommend:"Soft wash + low pressure. Pair with window cleaning service.",product:{name:"Peerless JAL 5L Glass Cleaner",price:"$27.98",store:"Bunnings",url:"https://www.bunnings.com.au/peerless-jal-5l-window-wash-concentrated-glass-cleaner_p4470413"}},
+{name:"Aluminium Pool Fence",tags:["aluminium","steel","pool fence","metal fence"],method:"Soft Wash + Medium Pressure",risk:"Low",tip:"Easy to clean. Soft wash removes algae from pool areas. Medium pressure gives excellent results.",caution:"Avoid acidic cleaners on aluminium.",recommend:"Soft wash + medium pressure. Great add-on to pool area jobs.",product:{name:"30 Seconds 1L Outdoor Cleaner",price:"$15.35",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-1l-outdoor-cleaner-spray-1l_p4461747"}},
+]},
+{category:"Outdoor Living",items:[
+{name:"Timber Deck",tags:["timber","deck","wood","decking"],method:"Soft Wash Only",risk:"High",tip:"One of the most commonly damaged surfaces. Soft wash only, always with the grain of the timber.",caution:"Pressure washing across the grain damages timber fibres permanently.",recommend:"Soft wash + low pressure with the grain. Recommend oiling or sealing after clean.",product:{name:"Cabots 4L Deck Clean",price:"$41.29",store:"Bunnings",url:"https://www.bunnings.com.au/cabot-s-4l-deck-clean_p1521477"}},
+{name:"Composite Decking",tags:["composite","deck","trex","decking"],method:"Soft Wash + Low-Medium Pressure",risk:"Low-Medium",tip:"More durable than timber. Soft wash removes algae well. Check manufacturer guidelines.",caution:"Some composite decking warranties are voided by pressure washing above specified PSI.",recommend:"Soft wash + low-medium pressure. Keep nozzle moving constantly.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+{name:"Concrete Patio",tags:["concrete","patio","entertaining","slab"],method:"Pressure Wash",risk:"Low",tip:"Ideal pressure washing candidates. Surface cleaner attachment gives fast even results.",caution:"Watch for expansion joints — high pressure can erode the filler.",recommend:"High pressure with surface cleaner. Excellent results, easy job.",product:{name:"Chemtech 5L Concrete & Driveway Cleaner",price:"$36.63",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-5l-concrete-and-driveway-cleaner_p0960074"}},
+{name:"Tiled Patio / Alfresco",tags:["tiles","patio","alfresco","porcelain","ceramic"],method:"Soft Wash + Medium Pressure",risk:"Medium",tip:"Depends on tile type. Porcelain handles medium pressure well. Natural stone requires soft wash only.",caution:"Grout lines can be eroded by high pressure. Check tile type before starting.",recommend:"Identify tile type first. Soft wash for natural stone, medium pressure for porcelain.",product:{name:"Chemtech 5L Brick Tile & Paver Cleaner",price:"$52.47",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-5l-brick-tile-and-paver-cleaner_p0964686"}},
+{name:"Brick Patio",tags:["brick","patio","clay brick","entertaining"],method:"Soft Wash + Medium Pressure",risk:"Low-Medium",tip:"Clay brick patios clean very well. Soft wash pre-treat, medium pressure rinse.",caution:"Protect mortar joints from sustained high pressure.",recommend:"Soft wash + medium pressure. Solid results.",product:{name:"Chemtech 5L Brick Tile & Paver Cleaner",price:"$52.47",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-5l-brick-tile-and-paver-cleaner_p0964686"}},
+{name:"Pool Surrounds",tags:["pool","surround","coping","concrete","tiles"],method:"Soft Wash + Medium Pressure",risk:"Low-Medium",tip:"Pool surrounds accumulate algae and calcium deposits. Avoid getting chemicals in pool water.",caution:"Keep cleaning chemicals away from pool water. Rinse thoroughly.",recommend:"Soft wash + medium pressure. Great add-on to any pool area job.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+]},
+{category:"Miscellaneous",items:[
+{name:"Wheelie Bins",tags:["bins","wheelie bin","rubbish bin","garbage"],method:"Pressure Wash",risk:"Low",tip:"Easy, quick job. Great add-on to any residential clean. Medium pressure inside and out.",caution:"Ensure bin is empty before cleaning. Dispose of wastewater appropriately.",recommend:"Quick add-on upsell. $30-$50 per bin takes 5 minutes.",product:{name:"30 Seconds 1L Outdoor Cleaner",price:"$15.35",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-1l-outdoor-cleaner-spray-1l_p4461747"}},
+{name:"Garage Floor",tags:["garage","floor","concrete","oil stains"],method:"Hot Water Pressure Wash",risk:"Low",tip:"Garage floors respond extremely well to hot water pressure washing. Degrease oil stains first.",caution:"Ensure drainage is adequate before flooding garage floor.",recommend:"Hot water unit if available. Pre-treat oil stains with degreaser.",product:{name:"Chemtech 5L Concrete & Driveway Cleaner",price:"$36.63",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-5l-concrete-and-driveway-cleaner_p0960074"}},
+{name:"Gutters (Exterior)",tags:["gutters","exterior","fascia","colorbond"],method:"Soft Wash + Medium Pressure",risk:"Low",tip:"Exterior of gutters accumulates algae and dirt. Good add-on to any roof or exterior job.",caution:"Do not direct pressure into gutter joins or downpipe connections.",recommend:"Great upsell during roof or exterior jobs.",product:{name:"30 Seconds 5L Outdoor Cleaner",price:"$42.98",store:"Bunnings",url:"https://www.bunnings.com.au/30-seconds-5l-outdoor-cleaner-concentrate_p4461755"}},
+{name:"Commercial Car Park",tags:["commercial","driveway","entrance","carpark"],method:"Hot Water Pressure Wash",risk:"Low",tip:"Commercial concrete areas handle high pressure well. Surface cleaner attachment essential.",caution:"Manage wastewater runoff according to local council requirements.",recommend:"High pressure, surface cleaner, hot water unit for grease. Quote by area.",product:{name:"Chemtech 5L Concrete & Driveway Cleaner",price:"$36.63",store:"Bunnings",url:"https://www.bunnings.com.au/chemtech-5l-concrete-and-driveway-cleaner_p0960074"}},
+]},
+];let surfaceSearch=’’;
+function riskColor(r){if(r.includes(‘Extreme’)||r.includes(‘Very High’))return ‘#ff4444’;if(r.includes(‘High’))return ‘#ff8800’;if(r.includes(‘Medium’))return ‘#ffcc00’;return ‘#00ff88’;}
+function renderSurfaces(){
+const allItems=SURFACES.flatMap(cat=>cat.items.map(i=>({…i,category:cat.category})));
+const q=surfaceSearch.trim().toLowerCase();
+const filtered=q?allItems.filter(i=>i.name.toLowerCase().includes(q)||i.tags.some(t=>t.includes(q))||i.category.toLowerCase().includes(q)):null;
+const renderItem=(item,i)=>{
+const id=‘surf-’+i+’-’+item.name.replace(/\W/g,’_’);
+const rc=riskColor(item.risk);
+return `<div class="surface-item" id="${id}">
+<div class="surface-header" onclick="toggleSurface('${id}')">
+<div style="flex:1;">
+<div style="color:#fff;font-size:14px;font-weight:700;">${item.name}</div>
+<div style="margin-top:6px;">
+<span style="font-size:10px;padding:2px 8px;border-radius:100px;background:#001a1a;color:#00E5FF;border:1px solid #003333;">${item.method}</span>
+<span style="font-size:10px;padding:2px 8px;border-radius:100px;background:${rc}22;color:${rc};border:1px solid ${rc}44;margin-left:6px;">Risk: ${item.risk}</span>
+</div>
+</div>
+<span id="${id}-arrow" style="color:#555;font-size:16px;margin-left:12px;">▼</span>
+</div>
+<div class="surface-body">
+<div style="background:#0d0d0d;border:1px solid #1a1a1a;border-radius:10px;padding:10px 14px;margin-top:12px;">
+<div style="color:#555;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;">Technique</div>
+<div style="color:#ccc;font-size:13px;line-height:1.6;">${item.tip}</div>
+</div>
+<div style="background:#1a0a0a;border:1px solid #330000;border-radius:10px;padding:10px 14px;margin-top:8px;">
+<div style="color:#ff6666;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">⚠️ Caution</div>
+<div style="color:#cc8888;font-size:13px;line-height:1.6;">${item.caution}</div>
+</div>
+<div style="background:#001a0a;border:1px solid #003311;border-radius:10px;padding:10px 14px;margin-top:8px;">
+<div style="color:#00ff88;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px;">✅ Recommendation</div>
+<div style="color:#66cc88;font-size:13px;line-height:1.6;">${item.recommend}</div>
+</div>
+${item.product?`<a href="${item.product.url}" target="_blank" style="display:block;text-decoration:none;margin-top:8px;">
+<div style="background:#0a0d12;border:1px solid #1a2a3a;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:12px;">
+<div style="font-size:28px;flex-shrink:0;">🧴</div>
+<div style="flex:1;">
+<div style="color:#aaa;font-size:10px;letter-spacing:2px;text-transform:uppercase;margin-bottom:3px;">Recommended Product</div>
+<div style="color:#fff;font-size:13px;font-weight:600;line-height:1.4;">${item.product.name}</div>
+<div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+<span style="color:#00E5FF;font-size:14px;font-weight:800;">${item.product.price}</span>
+<span style="background:#1a2a1a;color:#00cc44;font-size:10px;padding:2px 8px;border-radius:100px;border:1px solid #003311;">${item.product.store}</span>
+</div>
+</div>
+<div style="color:#00E5FF;font-size:18px;">→</div>
+</div>
+</a>`:''}
+</div>
+</div>`;}; 
+const catDiv=(cat)=>`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div style="flex:1;height:1px;background:#1a1a1a;"></div><span style="color:#00E5FF;font-size:10px;letter-spacing:3px;text-transform:uppercase;">${cat}</span><div style="flex:1;height:1px;background:#1a1a1a;"></div></div>`;
+let content='';
+if(q){
+content=`<p style="color:#555;font-size:12px;margin-bottom:12px;">${filtered.length} result${filtered.length!==1?'s':''} for "${surfaceSearch}"</p>`;
+if(filtered.length===0){content+=`<div style="text-align:center;padding:40px;"><div style="font-size:32px;margin-bottom:12px;">🔍</div><div style="color:#555;font-size:14px;">No surfaces found</div></div>`;}
+else{let lastCat='';filtered.forEach((item,i)=>{if(item.category!==lastCat){content+=catDiv(item.category);lastCat=item.category;}content+=renderItem(item,i);});}
+}else{SURFACES.forEach(cat=>{content+=`<div style="margin-bottom:24px;">${catDiv(cat.category)}${cat.items.map((item,i)=>renderItem(item,i)).join('')}</div>`;});}
+return `<div style="padding:20px 16px;">
+<p style="color:#00E5FF;font-size:11px;letter-spacing:3px;text-transform:uppercase;margin-bottom:4px;">Surface Guide</p>
+<p style="color:#555;font-size:12px;margin-bottom:16px;">Tap any surface for technique, caution and recommendation.</p>
+<div style="position:relative;margin-bottom:20px;">
+<span style="position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;">🔍</span>
+<input placeholder="Search surface type..." value="${surfaceSearch}" oninput="surfaceSearch=this.value;render()" style="padding-left:40px;">
+${surfaceSearch?`<button onclick="surfaceSearch='';render()" style="position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:#555;cursor:pointer;font-size:18px;">×</button>`:''}
+</div>
+${content}
+</div>`;}
+function toggleSurface(id){const el=document.getElementById(id);const arrow=document.getElementById(id+'-arrow');if(el){el.classList.toggle('open');if(arrow)arrow.textContent=el.classList.contains('open')?'▲':'▼';}}
+render();
+</script>
+</body>
+</html>
